@@ -74,7 +74,7 @@
     },
     methods: {
       async ingreso() {
-        await axios.post('http://localhost:3001/api/signup', {
+        await axios.post('https://backend-helptravel-production.up.railway.app/api/signup', {
           nameUser: this.name,
           email: this.email,
           password: this.password,

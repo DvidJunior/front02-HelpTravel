@@ -286,7 +286,7 @@ export default {
     this.costo = costo;
     this.dias = dias;
 
-    axios.get('http://localhost:3001/api/get-Cart')
+    axios.get('https://backend-helptravel-production.up.railway.app/api/get-Cart')
             .then(respuesta => {
                 this.valorPack = respuesta.data.totalValue
             })
@@ -331,7 +331,7 @@ export default {
         //console.log(paymentMethod.id);
         const { id } = paymentMethod;
 
-        await axios.post('http://localhost:3001/api/payment', {
+        await axios.post('https://backend-helptravel-production.up.railway.app/api/payment', {
           id,
           amount: parseInt(this.amount),
         })
@@ -343,7 +343,7 @@ export default {
             console.log(error);
           });
 
-        await axios.post('http://localhost:3001/api/envio', {
+        await axios.post('https://backend-helptravel-production.up.railway.app/api/envio', {
           origin: "Bogota", 
           destinoCiudad: this.ciudad, 
           destinoDir: this.direccion, 

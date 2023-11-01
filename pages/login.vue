@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     async login() {
-      await axios.post('http://localhost:3001/api/signin', {
+      await axios.post('https://backend-helptravel-production.up.railway.app/api/signin', {
         email: this.email,
         password: this.password,
       })

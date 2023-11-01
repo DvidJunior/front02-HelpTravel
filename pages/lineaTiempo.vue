@@ -63,7 +63,7 @@ export default {
 
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
-        await axios.get('http://localhost:3001/api/getEnvio')
+        await axios.get('https://backend-helptravel-production.up.railway.app/api/getEnvio')
             .then(respuesta => {
                 console.log(this.envios = respuesta.data.cart);
             })
