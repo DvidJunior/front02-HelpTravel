@@ -226,7 +226,9 @@ export default {
       total: null,
       amount: null,
   
-      num_guia: ''
+      num_guia: '',
+
+      stripe: 'pk_test_51N3NXbCHS2iRjMQ4nsHti0gjNvQPA2XLEhavu1EK7vOBD8v8OmDZJjU2cvXsgSalRXW3ttpuFGpfD8nABygFk98l00hqtuKla6',
 
     };
   },
@@ -235,7 +237,7 @@ export default {
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
     //this.stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
-    this.stripe = await loadStripe(STRIPE_PUBLIC_KEY);
+    this.stripe = await loadStripe(this.stripe);
 
     const elements = this.stripe.elements();
 
