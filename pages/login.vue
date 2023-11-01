@@ -14,12 +14,14 @@
               <label class="signin-label1">Contraseña</label>
               <input type="password" id="password" v-model="password" placeholder="Contraseña" required autofocus class="signin-textinput1 input" />
               <div class="signin-max-whidth-bottun">
-                <button type="submit" class="signin-button button">Acceder</button>
+                <button id="botonLogin" type="submit" class="signin-button button">Acceder</button>
               </div>
             </form>
             <div class="signin-container-link">
               <span class="signin-text2">¿ No tiene una cuenta ?</span>
-              <span class="signin-text3">Registrese</span>
+              <router-link to="/registro" class="signin-text3">
+                 Registrese
+              </router-link>
             </div>
           </div>
           <div class="signin-container-imagen">

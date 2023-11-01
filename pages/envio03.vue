@@ -1,16 +1,19 @@
 <template>
     <div class="envio03-container">
         <div class="envio03-max-width">
-            <div class="envio03-container-sidelbar"><app-sidelbar></app-sidelbar></div>
+            <div class="envio03-container-sidelbar">
+                <app-sidelbar></app-sidelbar>
+                <router-view />
+            </div>
             <div class="envio03-menu-container">
-                <app-navbar1></app-navbar1>
+                <app-navbar1 :menuItem="menuItem"></app-navbar1>
                 <div class="envio03-content-container">
                     <div class="envio03-container-articulo">
                         <div class="envio03-text-container">
                             <div class="envio03-max-width-input">
                                 <form @submit.prevent="obtenerDataEnvio" class="envio03-form">
                                     <div class="envio03-container1">
-                                        <select v-model="categoriaSelect" class="envio03-select">
+                                        <select v-model="categoriaSelect" class="envio03-select" id="selectCategories">
                                             <option value="" disabled selected>Categorias</option>
                                             <option v-for="categoria in categorias" :key="categoria.id_Categories"
                                                 :value="categoria.id_Categories">
@@ -18,15 +21,15 @@
                                             </option>
                                         </select>
                                         <input type="number" v-model="NumItems" required autofocus
-                                            placeholder="Number Item's" class="envio03-textinput input" />
+                                            placeholder="Number Item's" class="envio03-textinput input" id="numItem"/>
                                     </div>
                                     <div class="envio03-container2">
                                         <label for="value" class="label-text">Monto Minimo $ 10.000</label>
                                         <input id="value" type="number" v-model="valuesItems" required autofocus
-                                            placeholder="Precio Declarado" class="envio03-textinput1 input" />
+                                            placeholder="Precio Declarado" class="envio03-textinput1 input"/>
                                         <input type="number" v-model="peso" required autofocus placeholder="PESO Aproximado"
-                                            class="envio03-textinput2 input" />
-                                        <button type="submit" class="envio03-button button">
+                                            class="envio03-textinput2 input" id="pesoInput"/>
+                                        <button type="submit" class="envio03-button button" id="envio03-button">
                                             <span>
                                                 <span>Add +</span>
                                             </span>
@@ -85,7 +88,7 @@
                                                                             {{ itemCar.declared_value }}</p>
                                                                     </td>
                                                                     <td class="align-middle">
-                                                                        <button class="font-weight-bold style-button"
+                                                                        <button id="botonDeleteCart" class="font-weight-bold style-button"
                                                                             @click="deleteItem(itemCar.id)">Eliminar</button>
                                                                     </td>
                                                                 </tr>
@@ -99,7 +102,7 @@
                                 </div>
                                 <div class="envio03-conteiner-text">
                                     <h1 class="envio03-heading">Caja:</h1>
-                                    <span class="envio03-text03" v-if="box">[ {{ box.box }} ]</span>
+                                    <span id="box-assigned" class="envio03-text03" v-if="box">[ {{ box.box }} ]</span>
                                 </div>
                                 <div class="envio03-conteiner-text1">
                                     <h1 class="envio03-text044">Alto:</h1>
@@ -127,7 +130,7 @@
                                 </div>
                             </div>
                             <div class="envio03-container-button">
-                                <button @click="paguinacion" class="envio03-button1 button">
+                                <button @click="paguinacion" class="envio03-button1 button" id="next1">
                                     <svg viewBox="0 0 841.1428571428571 1024" class="envio03-icon">
                                         <path
                                             d="M841.143 548.571c0 19.429-7.429 38.286-21.143 52l-372 372c-13.714 13.143-32.571 21.143-52 21.143s-37.714-8-51.429-21.143l-42.857-42.857c-13.714-13.714-21.714-32.571-21.714-52s8-38.286 21.714-52l167.429-167.429h-402.286c-41.143 0-66.857-34.286-66.857-73.143v-73.143c0-38.857 25.714-73.143 66.857-73.143h402.286l-167.429-168c-13.714-13.143-21.714-32-21.714-51.429s8-38.286 21.714-51.429l42.857-42.857c13.714-13.714 32-21.714 51.429-21.714s38.286 8 52 21.714l372 372c13.714 13.143 21.143 32 21.143 51.429z">
@@ -157,6 +160,9 @@ export default {
     },
     data() {
         return {
+
+            menuItem: "Contenido del Paquete",
+
             categorias: [],
             categoriaSelect: '',
             itemsCar: [],

@@ -5,7 +5,7 @@
         <app-sidelbar rootClassName="sidelbar-root-class-name"></app-sidelbar>
       </div>
       <div class="pago-payment-container">
-        <app-navbar1></app-navbar1>
+        <app-navbar1 :menuItem="menuItem"></app-navbar1>
         <div class="pago-content-container">
           <div class="pago-text-container">
             <h1 class="pago-text">
@@ -46,10 +46,10 @@
                 </div>
                 <div class="pago-container-contenido">
                   <div class="pago-price-h1-total">
-                    <span class="pago-text12">[Producto]</span>
+                    <span class="pago-text12">{{ Company }}</span>
                     <div class="pago-container-price">
                       <h1 class="pago-text13">$</h1>
-                      <h1 class="pago-text14">000,00</h1>
+                      <h1 class="pago-text14">{{total}}</h1>
                     </div>
                   </div>
                   <div class="pago-product-seccion">
@@ -59,21 +59,21 @@
                           class="pago-image1" />
                       </div>
                       <div class="pago-name-product">
-                        <span class="pago-text15">[Destino]</span>
+                        <span class="pago-text15">{{ciudad}}</span>
                         <div class="pago-cantidad">
                           <span class="pago-text16">Cantidad Pack:</span>
-                          <span class="pago-text17"> [00]</span>
+                          <span class="pago-text17"> [ 01 ]</span>
                         </div>
                       </div>
                       <div class="pago-price">
                         <div class="pago-price-h1-total1">
                           <div class="pago-container01">
                             <span class="pago-text18">$</span>
-                            <span class="pago-text19">000,00</span>
+                            <span class="pago-text19">{{costo}}</span>
                           </div>
                           <div class="pago-container-price1">
                             <span class="pago-text20">$</span>
-                            <span class="pago-text21">000,00</span>
+                            <span class="pago-text21">{{ valorPack }}</span>
                           </div>
                         </div>
                       </div>
@@ -85,21 +85,21 @@
                     <span class="pago-text29">Subtotal</span>
                     <div class="pago-container04">
                       <span class="pago-text30">$</span>
-                      <span>Text</span>
+                      <span>{{costo}}</span>
                     </div>
                   </div>
                   <div class="pago-container05">
-                    <span class="pago-text32">I.V.A (6.5%)</span>
+                    <span class="pago-text32">Comision (6.5%)</span>
                     <div class="pago-container06">
                       <span class="pago-text33">$</span>
-                      <span class="pago-text34">Text</span>
+                      <span class="pago-text34">{{comision}}</span>
                     </div>
                   </div>
                   <div class="pago-container07">
                     <span class="pago-text35">Total      </span>
                     <div class="pago-container08">
                       <span class="pago-text36">$</span>
-                      <span class="pago-text37">Text</span>
+                      <span class="pago-text37">{{total}}</span>
                     </div>
                   </div>
                 </div>
@@ -129,23 +129,23 @@
                       <span>Correo Electronico</span>
                       <br />
                     </span>
-                    <input type="text" placeholder="" class="pago-textinput3 input" v-model="email" />
+                    <input type="text" placeholder="" class="pago-textinput3 input" v-model="email" id="correo"/>
                     <span class="pago-text44">
                       <span>Nombre del Titular</span>
                       <br />
                     </span>
-                    <input type="text" placeholder="" class="pago-textinput4 input" v-model="nameHolder" />
+                    <input type="text" placeholder="" class="pago-textinput4 input" v-model="nameHolder" id="titular"/>
                     <span class="pago-text47">
                       <span>País o región</span>
                       <br />
                     </span>
-                    <select class="pago-select">
+                    <select class="pago-select" id="pais">
                       <option value="" disabled selected>Seleccion un Pais</option>
                       <option value="Option 2">Colombia</option>
                     </select>
                   </div>
                   <div class="pago-container-botton">
-                    <button class="truck-button button" @click="tokenCard">
+                    <button class="truck-button button" @click="tokenCard" id="truck-button">
                       <span class="default">Complete la Orden</span>
                       <span class="success" v-if="statusBotton === true">
                         Orden Aceptada
@@ -202,6 +202,8 @@ export default {
       rawftbk: " ",
       rawcaat: " ",
 
+      menuItem: "Resumen Pago",
+
       statusBotton: null,
 
       stripe: null,
@@ -211,11 +213,27 @@ export default {
       cardNumber: null,
       cardExpiry: null,
       cardCvc: null,
-      card: null
+      card: null,
+
+      ciudad: '',
+      direccion: '',
+      Company: '',
+      costo: '',
+      dias: '',
+
+      valorPack: null,
+      comision: null,
+      total: null,
+      amount: null,
+  
+      num_guia: ''
 
     };
   },
   async mounted() {
+
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
     this.stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
 
     const elements = this.stripe.elements();
@@ -261,6 +279,30 @@ export default {
     this.animateButton();
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+    const { ciudad, direccion, Company, costo, dias } = this.$route.query
+    this.ciudad = ciudad;
+    this.direccion = direccion;
+    this.Company = Company;
+    this.costo = costo;
+    this.dias = dias;
+
+    axios.get('http://localhost:3001/api/get-Cart')
+            .then(respuesta => {
+                this.valorPack = respuesta.data.totalValue
+            })
+            .catch(error => {
+                this.$swal({
+                    title: 'ERROR',
+                    text: '¡Upss paso algo con el valor del Envio!',
+                    icon: 'warning',
+                    confirmButtonColor: 'red',
+                });
+            });
+    
+    this.comision = ((this.costo*6.5)/100)
+    this.total = parseInt(this.comision) + parseInt(this.costo)
+
+    this.amount = (( this.total / 4563.89) * 100 )
   },
   methods: {
     async tokenCard() {
@@ -291,7 +333,7 @@ export default {
 
         await axios.post('http://localhost:3001/api/payment', {
           id,
-          amount: 10000,
+          amount: parseInt(this.amount),
         })
           .then((respu) => {
             this.statusBotton = true;
@@ -300,6 +342,19 @@ export default {
             this.statusBotton = false;
             console.log(error);
           });
+
+        await axios.post('http://localhost:3001/api/envio', {
+          origin: "Bogota", 
+          destinoCiudad: this.ciudad, 
+          destinoDir: this.direccion, 
+          precioTotal: this.total, 
+          diasHabiles: this.dias, 
+          companyName: this.Company, 
+          num_guia: "abc123"
+        })
+        setTimeout(() => {
+                this.$router.push('/loading')
+            }, 2700)
       }
     },
 
