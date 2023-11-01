@@ -234,7 +234,8 @@ export default {
 
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
 
-    this.stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
+    //this.stripe = await loadStripe(process.env.STRIPE_PUBLIC_KEY);
+    this.stripe = await loadStripe(STRIPE_PUBLIC_KEY);
 
     const elements = this.stripe.elements();
 
