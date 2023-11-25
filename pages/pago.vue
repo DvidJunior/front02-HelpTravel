@@ -5,7 +5,7 @@
         <app-sidelbar rootClassName="sidelbar-root-class-name"></app-sidelbar>
       </div>
       <div class="pago-payment-container">
-        <app-navbar1 :menuItem="menuItem"></app-navbar1>
+        <app-navbar1 :menuItem="menuItem" :heading1="nameUsu"></app-navbar1>
         <div class="pago-content-container">
           <div class="pago-text-container">
             <h1 class="pago-text">
@@ -55,8 +55,7 @@
                   <div class="pago-product-seccion">
                     <div class="pago-container-product">
                       <div class="pago-logo">
-                        <img alt="image" src="https://play.teleporthq.io/static/svg/default-img.svg"
-                          class="pago-image1" />
+                        <img :src=image alt="image" class="pago-image1" />
                       </div>
                       <div class="pago-name-product">
                         <span class="pago-text15">{{ciudad}}</span>
@@ -202,6 +201,8 @@ export default {
       rawftbk: " ",
       rawcaat: " ",
 
+      nameUsu: "",
+
       menuItem: "Resumen Pago",
 
       statusBotton: null,
@@ -282,12 +283,13 @@ export default {
     this.animateButton();
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-    const { ciudad, direccion, Company, costo, dias } = this.$route.query
+    const { ciudad, direccion, Company, costo, dias, imagen } = this.$route.query
     this.ciudad = ciudad;
     this.direccion = direccion;
     this.Company = Company;
     this.costo = costo;
     this.dias = dias;
+    this.image = imagen;
 
     axios.get('https://backend-helptravel-production.up.railway.app/api/get-Cart')
             .then(respuesta => {
@@ -306,8 +308,28 @@ export default {
     this.total = parseInt(this.comision) + parseInt(this.costo)
 
     this.amount = (( this.total / 4563.89) * 100 )
+
+    this.getUsuario();
+
   },
   methods: {
+
+    async getUsuario() {
+
+      await axios.get('https://backend-helptravel-production.up.railway.app/api/user')
+        .then(respuesta => {
+          this.nameUsu = respuesta.data.email
+        })
+        .catch(error => {
+          this.$swal({
+            title: 'ERROR',
+            text: '¡Upss paso algo el nombre del ususario!',
+            icon: 'warning',
+            confirmButtonColor: 'red',
+          });
+        });
+    },
+
     async tokenCard() {
       const { error, paymentMethod } = await this.stripe.createPaymentMethod({
         type: "card",

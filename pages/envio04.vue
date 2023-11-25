@@ -3,7 +3,7 @@
         <div class="envio04-max-width">
             <div class="envio04-container-sidelbar"><app-sidelbar></app-sidelbar></div>
             <div class="envio04-menu-container">
-                <app-navbar1 :menuItem="menuItem"></app-navbar1>
+                <app-navbar1 :menuItem="menuItem" :heading1="nameUsu"></app-navbar1>
                 <div class="envio04-content-container">
                     <div class="envio04-passenger-location">
                         <div class="envio04-max-width1">
@@ -110,6 +110,7 @@ export default {
             raw30qw: ' ',
 
             menuItem: "Ubicacion",
+            nameUsu: "",
 
             departamentos: [],
             departamentoSelect: '',
@@ -135,8 +136,28 @@ export default {
         loader.load().then(() => {
             this.initMap();
         });
+
+        this.getUsuario();
     },
     methods: {
+
+        async getUsuario() {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
+            await axios.get('https://backend-helptravel-production.up.railway.app/api/user')
+                .then(respuesta => {
+                    this.nameUsu = respuesta.data.email
+                })
+                .catch(error => {
+                    this.$swal({
+                        title: 'ERROR',
+                        text: '¡Upss paso algo el nombre del ususario!',
+                        icon: 'warning',
+                        confirmButtonColor: 'red',
+                    });
+                });
+        },
+
         listarDepart() {
             axios.get('https://backend-helptravel-production.up.railway.app/api/listarDp')
                 .then(respuesta => {

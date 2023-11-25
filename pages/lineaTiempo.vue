@@ -6,17 +6,18 @@
                 <router-view />
             </div>
             <div class="envio01-menu-container">
-                <app-navbar1 rootClassName="navbar1-root-class-name" :menuItem="menuItem"></app-navbar1>
+                <app-navbar1 rootClassName="navbar1-root-class-name" :menuItem="menuItem" :heading1="nameUsu"></app-navbar1>
                 <div class="envio01-content-container">
                     <div class="envio01-text-container">
                         <div>
                             <h1 class="envio01-text01">Seguimiento del envío de equipaje</h1>
                             <Timeline v-if="isThereAnyShipment">
-                                <TimelineItem date="2023-10-31" content="Equipaje recibido en el aeropuerto." :delay="0" />
+                                <TimelineItem date="2023-11-01" content="Equipaje recibido en el aeropuerto." :delay="0" />
                                 <TimelineItem date="2023-11-01" content="Equipaje en proceso de carga." :delay="1000" />
                                 <TimelineItem date="2023-11-02" content="Equipaje enviado al destino." :delay="2000" />
                                 <TimelineItem date="2023-11-03" content="Equipaje recibido en el destino." :delay="3000" />
                             </Timeline>
+                            <h1 class="envio01-text01">ID de envio {{ idEnvio }}</h1>
                         </div>
                     </div>
                 </div>
@@ -55,6 +56,11 @@ export default {
             rawm9hm: ' ',
             rawf20f: ' ',
 
+            nameUsu: '',
+
+            idEnvio: '',
+            fech: '',
+
             condicional: true,
             envios: [],
         }
@@ -65,12 +71,28 @@ export default {
 
         await axios.get('https://backend-helptravel-production.up.railway.app/api/getEnvio')
             .then(respuesta => {
-                console.log(this.envios = respuesta.data.cart);
+                this.envios = respuesta.data.cart
+                this.idEnvio = respuesta.data.cart[0].id_envio
+                this.fech = respuesta.data.cart[0].cretate_at
+
             })
             .catch(error => {
                 this.$swal({
                     title: 'ERROR',
                     text: '¡Lista de Envio fallando!',
+                    icon: 'warning',
+                    confirmButtonColor: 'red',
+                });
+            });
+
+        await axios.get('https://backend-helptravel-production.up.railway.app/api/user')
+            .then(respuesta => {
+                this.nameUsu = respuesta.data.email
+            })
+            .catch(error => {
+                this.$swal({
+                    title: 'ERROR',
+                    text: '¡Upss paso algo el nombre del ususario!',
                     icon: 'warning',
                     confirmButtonColor: 'red',
                 });
@@ -166,6 +188,7 @@ export default {
     font-size: 20px;
     font-family: Open Sans;
     margin-bottom: var(--dl-space-space-unit);
+    margin-top: 20px;
 }
 </style>
   

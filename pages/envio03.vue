@@ -6,7 +6,7 @@
                 <router-view />
             </div>
             <div class="envio03-menu-container">
-                <app-navbar1 :menuItem="menuItem"></app-navbar1>
+                <app-navbar1 :menuItem="menuItem" :heading1="nameUsu" ></app-navbar1>
                 <div class="envio03-content-container">
                     <div class="envio03-container-articulo">
                         <div class="envio03-text-container">
@@ -163,6 +163,8 @@ export default {
 
             menuItem: "Contenido del Paquete",
 
+            nameUsu: "",
+
             categorias: [],
             categoriaSelect: '',
             itemsCar: [],
@@ -215,8 +217,28 @@ export default {
             valuesItems: this.valuesItems,
             peso: this.peso
         };
+
+        this.getUsuario();
     },
     methods: {
+
+        async getUsuario() {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
+            await axios.get('https://backend-helptravel-production.up.railway.app/api/user')
+                .then(respuesta => {
+                    this.nameUsu = respuesta.data.email
+                })
+                .catch(error => {
+                    this.$swal({
+                        title: 'ERROR',
+                        text: '¡Upss paso algo el nombre del ususario!',
+                        icon: 'warning',
+                        confirmButtonColor: 'red',
+                    });
+                });
+        },
+
         async obtenerDataEnvio() {
             
             let totalpeso = parseInt(this.peso) + this.pesoBox
@@ -281,12 +303,12 @@ export default {
         },
 
         async deleteItem(id) {
-            await axios.delete('https://backend-helptravel-production.up.railway.app/api/deleteItemCart/' + id)
+            await axios.delete('https://backend-helptravel-production.up.railway.app/deleteItemCart/' + id)
                 .then(res => {
-                    console.log(res);
+                    //console.log(res);
                 })
                 .catch(e => {
-                    console.log(e);
+                    //console.log(e);
                 });
 
             await axios.get('https://backend-helptravel-production.up.railway.app/api/get-Cart')

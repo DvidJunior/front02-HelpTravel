@@ -5,7 +5,7 @@
         <app-sidelbar></app-sidelbar>
       </div>
       <div class="cotizacion-cotiza-container">
-        <app-navbar1 :menuItem="menuItem"></app-navbar1>
+        <app-navbar1 :menuItem="menuItem" :heading1="nameUsu"></app-navbar1>
         <div class="cotizacion-content-container">
           <div class="cotizacion-text-container">
             <h1 class="cotizacion-text">
@@ -47,7 +47,7 @@
                   Esta informacion es un estimado basado en envios anterirores con
                   caracteristicas similares, esto solo es un promedio
                 </span>
-                <button class="cotizacion-button button" @click="pasarData(cotizacion)" >
+                <button class="cotizacion-button button" @click="pasarData(cotizacion)">
                   <svg viewBox="0 0 1024 1024" class="cotizacion-icon">
                     <path
                       d="M954.857 323.429c0 14.286-5.714 28.571-16 38.857l-491.429 491.429c-10.286 10.286-24.571 16-38.857 16s-28.571-5.714-38.857-16l-284.571-284.571c-10.286-10.286-16-24.571-16-38.857s5.714-28.571 16-38.857l77.714-77.714c10.286-10.286 24.571-16 38.857-16s28.571 5.714 38.857 16l168 168.571 374.857-375.429c10.286-10.286 24.571-16 38.857-16s28.571 5.714 38.857 16l77.714 77.714c10.286 10.286 16 24.571 16 38.857z">
@@ -97,9 +97,12 @@ export default {
 
       cotizaciones: [],
 
+      nameUsu: "",
+
       nombreCompany: '',
       costoShipping: '',
       duracion: '',
+      URLImagen: '',
     }
   },
 
@@ -135,7 +138,8 @@ export default {
       declaredValue: this.totalValue
     })
       .then(respuesta => {
-        console.log(this.cotizaciones = respuesta.data.data);
+        //(
+        this.cotizaciones = respuesta.data.data
       })
       .catch(error => {
         this.$swal({
@@ -145,14 +149,36 @@ export default {
           confirmButtonColor: 'red',
         });
       });
+
+    this.getUsuario();
+
   },
   methods: {
+
+    async getUsuario() {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
+      await axios.get('https://backend-helptravel-production.up.railway.app/api/user')
+        .then(respuesta => {
+          this.nameUsu = respuesta.data.email
+        })
+        .catch(error => {
+          this.$swal({
+            title: 'ERROR',
+            text: '¡Upss paso algo el nombre del ususario!',
+            icon: 'warning',
+            confirmButtonColor: 'red',
+          });
+        });
+    },
+
     pasarData(data) {
-      console.log(data);
+      //console.log(data);
 
       this.nombreCompany = data.deliveryCompanyName
       this.costoShipping = data.shippingCost
       this.duracion = parseInt((data.shippingTime / 60) / 24)
+      this.URLImagen = data.deliveryCompanyImgUrl
 
       const { ciudad, dir } = this.$route.query
 
@@ -163,7 +189,8 @@ export default {
           direccion: dir,
           Company: this.nombreCompany,
           costo: this.costoShipping,
-          dias: this.duracion
+          dias: this.duracion,
+          imagen: this.URLImagen
         }
       });
     }

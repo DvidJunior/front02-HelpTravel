@@ -6,7 +6,7 @@
                 <router-view />
             </div>
             <div class="envio01-menu-container">
-                <app-navbar1 rootClassName="navbar1-root-class-name" :menuItem="menuItem"></app-navbar1>
+                <app-navbar1 rootClassName="navbar1-root-class-name" :menuItem="menuItem" :heading1="nameUsu"></app-navbar1>
                 <div class="envio01-content-container">
                     <div class="envio01-text-container">
                         <h1 class="envio01-text">
@@ -99,6 +99,7 @@
 </template>
   
 <script>
+import axios from 'axios';
 import AppSidelbar from '../components/sidelbar.vue'
 import AppNavbar1 from '../components/navbar1.vue'
 
@@ -112,6 +113,8 @@ export default {
     data() {
         return {
             menuItem: "Tipo de Servicio",
+            nameUsu: "",
+
             rawdq25: ' ',
             rawd42b: ' ',
             raw685r: ' ',
@@ -119,6 +122,32 @@ export default {
             rawf20f: ' ',
         }
     },
+
+    mounted() {
+        this.getUsuario();
+    },
+
+    methods: {
+
+        getUsuario() {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
+            axios.get('https://backend-helptravel-production.up.railway.app/api/user')
+                .then(respuesta => {
+                    this.nameUsu = respuesta.data.email
+                })
+                .catch(error => {
+                    this.$swal({
+                        title: 'ERROR',
+                        text: '¡Upss paso algo el nombre del ususario!',
+                        icon: 'warning',
+                        confirmButtonColor: 'red',
+                    });
+                });
+        },
+
+    },
+
 }
 </script>
   

@@ -5,6 +5,9 @@
         <div class="navbar1-container-paguinacion">
           <span class="navbar1-text">{{ menuItem }}</span>
         </div>
+        <div class="navbar1-container-name">
+          <h1 class="navbar1-name-usu">{{ heading1 }}</h1>
+        </div>
         <div data-thq="thq-navbar-nav" data-role="Nav" class="navbar1-desktop-menu">
           <nav data-thq="thq-navbar-nav-links" data-role="Nav" class="navbar1-nav">
             <div class="navbar1-container-salir">
@@ -47,6 +50,10 @@ export default {
     menuItem: {
       type: String,
       required: true,
+    },
+    heading1: {
+      type: String,
+      default: 'NameUsu..',
     },
   },
   methods: {
@@ -110,6 +117,18 @@ export default {
   background-image: linear-gradient(135deg, rgba(255, 215, 0, 0.9) 0.00%, rgb(250, 121, 48) 63.00%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.navbar1-container-name {
+  flex: 0 0 auto;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+.navbar1-name-usu {
+  font-size: 18px;
 }
 
 .navbar1-desktop-menu {
